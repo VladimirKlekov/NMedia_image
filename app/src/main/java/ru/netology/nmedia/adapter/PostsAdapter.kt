@@ -101,6 +101,12 @@ class PostViewHolder(
                 onInteractionListener.onLike(post)
             }
 
+            attachment.setOnClickListener {
+                post.attachment?.let { attach ->
+                    onInteractionListener.onImage(attach.url)
+                }
+            }
+
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
             }

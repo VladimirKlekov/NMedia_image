@@ -40,6 +40,7 @@ class FeedFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_feedFragment_to_imageFragment, bundle
                 )
+
             }
             /** -------добавляю для add image-------------------------------------------------- **/
 
@@ -48,8 +49,15 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
+//                    viewModel.likeById(post.id)
+                if (post.likedByMe) {
+                    viewModel.unlikeById(post.id)
+                } else {
+                    viewModel.likeById(post.id)
+                }
+                viewModel.loadPosts()
             }
+
 
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
@@ -93,6 +101,7 @@ class FeedFragment : Fragment() {
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
+
 
 
         return binding.root
