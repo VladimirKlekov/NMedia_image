@@ -14,8 +14,10 @@ interface PostRepository {
     suspend fun removeById(id: Long)
     suspend fun likeById(id: Long)
     suspend fun unlikeById(id: Long)
-
     suspend fun upload(upload: MediaUpload): Media
     suspend fun getNewPosts()
+
+    /** -------добавляю для auth--------------------------------------------------------------- **/
+    suspend fun login(login: String, password: String)
 }
 

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.*
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.entity.PostEntity
@@ -163,6 +164,24 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
+    /** -------добавляю для auth---------------------------------------------------------------- **/
+    override suspend fun login(login: String, password: String) {
+        try {
+            val response = PostsApi.service.updateUser(login, password)
+//
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+//            val body = response.body() ?: throw ApiError(response.code(), response.message())
+//            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            println(e)
             throw UnknownError
         }
     }

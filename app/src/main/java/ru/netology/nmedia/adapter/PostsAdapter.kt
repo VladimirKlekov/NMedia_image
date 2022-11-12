@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,12 +16,18 @@ import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.view.loadCircleCrop
 
+/** -------добавляю для auth-------------------------------------------------------------------- **/
+/**
+1. Добавляем пункт меню и отобраем его, если пост является моим
+ 2.
+ * **/
+
 interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onShare(post: Post) {}
-    fun onImage(image: String){}
+    fun onImage(image: String) {}
 }
 
 class PostsAdapter(
@@ -53,7 +60,16 @@ class PostViewHolder(
             attachment.visibility = View.GONE
 
 
-            /** -------добавляю для add image-------------------------------------------------- **/
+            /** -------добавляю для auth------------------------------------------------------- **/
+            //1. Добавляем пункт меню и отобраем его, если пост является моим
+            menu.isVisible = post.ownedByMe
+
+
+
+            /** -------end auth---------------------------------------------------------------- **/
+
+
+
             val url = "${BASE_URL}/avatars/${post.authorAvatar}"
             Glide.with(itemView)
                 .load(url)
@@ -75,7 +91,7 @@ class PostViewHolder(
             } else {
                 attachment.visibility = View.GONE
             }
-            /** -------добавляю для add image-------------------------------------------------- **/
+
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

@@ -2,8 +2,16 @@ package ru.netology.nmedia.dto
 
 import ru.netology.nmedia.enumeration.AttachmentType
 
+/** -------добавляю для auth-------------------------------------------------------------------- **/
+/**
+1.Добавляю информацию в data class Post , что я являюсь авторм поста val ownedByMe: Boolean
+2.Добавляю val authorId : Long. Так же добавляю свойство в data class PostEntity(
+ 3. Далее иду в class PostViewModel
+  * **/
+
 data class Post(
     val id: Long,
+    val authorId : Long,
     val author: String,
     val authorAvatar: String,
     val content: String,
@@ -12,6 +20,7 @@ data class Post(
     val likes: Int = 0,
     val shown: Boolean,
     val attachment: Attachment? = null,
+    val ownedByMe: Boolean = false
 )
 
 data class Attachment(

@@ -5,8 +5,11 @@ import android.net.Uri
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.MediaUpload
 import ru.netology.nmedia.dto.Post
@@ -18,8 +21,17 @@ import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
 
+
+/** -------добавляю для auth-------------------------------------------------------------------- **/
+/**
+1.Добавляю информацию в PostViewModel из ata class Post , что я являюсь авторм поста val ownedByMe: Boolean
+2. Изменяю val data: LiveData<FeedModel> = repository.data на val data: LiveData<FeedModel> = AppAuth.getInstance().data.map...
+ 3.Далее иду в class PostsAdapter что бы добавить меню
+ * **/
+
 private val empty = Post(
     id = 0,
+    authorId = 0L,
     author = "",
     authorAvatar = "",
     content = "",
@@ -36,9 +48,20 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository =
         PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
 
-    val data: LiveData<FeedModel> = repository.data
-        .map(::FeedModel)
-        .asLiveData(Dispatchers.Default)
+
+    //делаю подписку на данные по авторизации
+    val data: LiveData<FeedModel> = AppAuth.getInstance().data.map {
+        it?.id ?: 0L
+    }.flatMapLatest { id ->
+        repository.data
+            .map {
+                FeedModel(it.map { post ->
+                    post.copy(ownedByMe = post.authorId == id)
+                }, it.isEmpty())
+            }
+
+
+    }.asLiveData(Dispatchers.Default)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -88,7 +111,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    when(_photo.value) {
+                    when (_photo.value) {
                         noPhoto -> repository.save(it)
                         else -> _photo.value?.file?.let { file ->
                             repository.saveWithAttachment(it, MediaUpload(file))
@@ -121,11 +144,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         _photo.value = PhotoModel(uri, file)
     }
 
-   fun likeById(id: Long) {
-       viewModelScope.launch {
-           repository.likeById(id)
-       }
-   }
+    fun likeById(id: Long) {
+        viewModelScope.launch {
+            repository.likeById(id)
+        }
+    }
 
     fun unlikeById(id: Long) = viewModelScope.launch {
         viewModelScope.launch {
@@ -135,7 +158,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun removeById(id: Long) {
-     viewModelScope.launch {
+        viewModelScope.launch {
             repository.removeById(id)
         }
     }

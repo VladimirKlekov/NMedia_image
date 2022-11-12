@@ -27,4 +27,11 @@
     <string name="description_image">Image</string>
     <string name="description_post_attachment">Вescription post attachment</string>
     <string name="remove">Remove</string>
+    <string name="logout">Logout</string>
+    <string name="sing_up">Sing Up</string>
+    <string name="text_top_bar">ON THE WAY TO SUCCESS</string>
+    <string name="authorization">Authorization</string>
+    <string name="sing_in">Sing In</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
 </resources>

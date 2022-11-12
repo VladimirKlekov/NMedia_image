@@ -28,4 +28,11 @@
     <string name="remove">Удалить</string>
     <string name="description_image">Описание фото</string>
     <string name="description_post_attachment">Описание вложения</string>
+    <string name="logout">Выйти</string>
+    <string name="sing_up">Вернуться</string>
+    <string name="text_top_bar">НА ПУТИ К УСПЕХУ</string>
+    <string name="authorization">Авторизация</string>
+    <string name="sing_in">Войти</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
 </resources>
