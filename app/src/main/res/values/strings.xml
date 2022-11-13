@@ -34,4 +34,9 @@
     <string name="sing_in">Sing In</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="registration">Registration</string>
+    <string name="error">Error</string>
+    <string name="wrong_login_or_password">Wrong login or password</string>
+    <string name="lost_network_connection">Lost network connection</string>
 </resources>

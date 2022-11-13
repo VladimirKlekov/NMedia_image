@@ -3,6 +3,7 @@ package ru.netology.nmedia.api
 import okhttp3.Interceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -87,10 +88,22 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface PostsApiService {
+    @Multipart
+    @POST("users/registration")
+    suspend fun registerWithPhoto(
+        @Part("login") login: RequestBody,
+        @Part("pass") pass: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part media: MultipartBody.Part,
+    ): Response<Token>
 
     @FormUrlEncoded
     @POST("users/authentication")
     suspend fun updateUser(@Field("login") login: String, @Field("pass") pass: String): Response<Token>
+
+//    @FormUrlEncoded
+//    @POST("users/registration")
+//    suspend fun registerUser(@Field("login") login: String, @Field("pass") pass: String, @Field("name") name: String): Response<Token>
 
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>

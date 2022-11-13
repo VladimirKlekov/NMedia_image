@@ -9,9 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentAuthSingInBinding
-import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.viewmodel.AuthSingInViewModel
-import ru.netology.nmedia.viewmodel.PostViewModel
 
 class AuthSingIn : Fragment(
 ) {
@@ -35,7 +33,7 @@ class AuthSingIn : Fragment(
         }
 
         return binding.root
-        //return inflater.inflate(R.layout.fragment_auth_sing_in, container, false)
+
 
         }
 

@@ -100,10 +100,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                             //тут нужны данные пользователя. Для выполнения ДЗ берем данные ->
                             //иду на сервер в controller -> userController:
                             //val netologiay, val sber, ....
+                            //AppAuth.getInstance().saveAuth(5,"x-token")
 
-                            /** auth: 2.Делаю сам **/
-                            //AppAuth.getInstance().saveAuth(5,"x-token")
-                            //AppAuth.getInstance().saveAuth(5,"x-token")
                             findNavController(R.id.nav_host_fragment)
                                 .navigate(
                                     R.id.action_feedFragment_to_authSingIn,
@@ -111,6 +109,10 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                             true
                         }
                         R.id.singUp -> {
+                            findNavController(R.id.nav_host_fragment)
+                                .navigate(
+                                    R.id.action_feedFragment_to_registrationFragment,
+                                    Bundle())
                             true
                         }
                         R.id.logout -> {

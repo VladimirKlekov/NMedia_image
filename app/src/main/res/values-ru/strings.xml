@@ -29,10 +29,15 @@
     <string name="description_image">Описание фото</string>
     <string name="description_post_attachment">Описание вложения</string>
     <string name="logout">Выйти</string>
-    <string name="sing_up">Вернуться</string>
+    <string name="sing_up">Регистрация</string>
     <string name="text_top_bar">НА ПУТИ К УСПЕХУ</string>
     <string name="authorization">Авторизация</string>
     <string name="sing_in">Войти</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
+    <string name="name">Имя</string>
+    <string name="registration">Регистрация</string>
+    <string name="error">Ошибка</string>
+    <string name="wrong_login_or_password">Не верный логин или пароль</string>
+    <string name="lost_network_connection">Потеряно сетевое соединение</string>
 </resources>

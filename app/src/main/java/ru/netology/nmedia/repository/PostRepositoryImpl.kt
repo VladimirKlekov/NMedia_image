@@ -4,8 +4,13 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import ru.netology.nmedia.api.*
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dao.PostDao
@@ -21,6 +26,8 @@ import ru.netology.nmedia.error.UnknownError
 import java.io.IOException
 
 class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
+
+
     override val data = dao.getAll()
         .map(List<PostEntity>::toDto)
         .flowOn(Dispatchers.Default)
@@ -63,7 +70,6 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
@@ -80,7 +86,6 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -101,6 +106,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
+            println("ошибка -> $e")
             throw UnknownError
         }
     }
@@ -126,23 +132,25 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         try {
             val media = upload(upload)
             // TODO: add support for other types
-            val postWithAttachment = post.copy(attachment = Attachment(media.id, AttachmentType.IMAGE))
+            val postWithAttachment =
+                post.copy(attachment = Attachment(media.id, AttachmentType.IMAGE))
             save(postWithAttachment)
         } catch (e: AppError) {
             throw e
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
-            println(e)
             throw UnknownError
         }
     }
 
     override suspend fun upload(upload: MediaUpload): Media {
         try {
-            val media = MultipartBody.Part.createFormData("file",
+            val media = MultipartBody.Part.createFormData(
+                "file",
                 upload.file.name,
-                upload.file.asRequestBody())
+                upload.file.asRequestBody()
+            )
 
             val content = MultipartBody.Part.createFormData("content", "text")
 
@@ -172,18 +180,43 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun login(login: String, password: String) {
         try {
             val response = PostsApi.service.updateUser(login, password)
-//
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-//            val body = response.body() ?: throw ApiError(response.code(), response.message())
-//            dao.insert(PostEntity.fromDto(body))
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            body.token?.let { AppAuth.getInstance().saveAuth(id = body.id, token = it) }
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
-            println(e)
             throw UnknownError
         }
     }
+
+    override suspend fun registration(login: String, password: String, name: String, media:MediaUpload) {
+        try {
+
+            val response = PostsApi.service.registerWithPhoto(
+                login = login.toRequestBody("text/plain".toMediaType()),
+                pass = password.toRequestBody("text/plain".toMediaType()),
+                name = name.toRequestBody("text/plain".toMediaType()),
+                media = MultipartBody.Part.createFormData("file",
+                    media.file.name,
+                    media.file.asRequestBody()
+                )
+            )
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            body.token?.let { AppAuth.getInstance().saveAuth(id = body.id, token = it) }
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
 }
+
+
 

@@ -2,6 +2,7 @@ package ru.netology.nmedia.error
 
 import android.database.SQLException
 import java.io.IOException
+import java.net.ConnectException
 
 sealed class AppError(var code: String) : RuntimeException() {
     companion object {
@@ -9,6 +10,8 @@ sealed class AppError(var code: String) : RuntimeException() {
             is AppError -> e
             is SQLException -> DbError
             is IOException -> NetworkError
+            is IllegalArgumentException -> AuthorizationException
+            is ConnectException -> LostConnectException
             else -> UnknownError
         }
     }
@@ -20,3 +23,5 @@ class ApiError(val status: Int, code: String) : AppError(code)
 object NetworkError : AppError("error_network")
 object DbError : AppError("error_db")
 object UnknownError : AppError("error_unknown")
+object AuthorizationException : AppError("authorization_failed")
+object LostConnectException : AppError("error_connect")

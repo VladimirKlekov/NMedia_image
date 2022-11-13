@@ -6,6 +6,7 @@ import ru.netology.nmedia.dto.MediaUpload
 import ru.netology.nmedia.dto.Post
 
 interface PostRepository {
+
     val data: Flow<List<Post>>
     suspend fun getAll()
     fun getNewerCount(id: Long): Flow<Int>
@@ -19,5 +20,6 @@ interface PostRepository {
 
     /** -------добавляю для auth--------------------------------------------------------------- **/
     suspend fun login(login: String, password: String)
+    suspend fun registration(login: String, password: String, name: String, media:MediaUpload)
 }
 
