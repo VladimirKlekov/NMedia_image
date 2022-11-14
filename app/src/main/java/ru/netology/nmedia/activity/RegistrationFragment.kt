@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
@@ -68,14 +69,25 @@ class RegistrationFragment : Fragment() {
 
         val binding = FragmentRegistrationBinding.inflate(inflater, container, false)
 
+        fun onImage(image: String) {
+            val bundle = Bundle().apply {
+                putString("image", image)
+            }
+            findNavController().navigate(
+                R.id.action_feedFragment_to_imageFragment, bundle
+            )
+
+        }
+
 
         binding.enterButton.setOnClickListener {
+
             if (binding.passwordTextInputLayout.editText?.text == binding.replayPasswordTextInputLayout.editText?.text)
                 viewModel.registration(
                     binding.loginTextInputLayout.editText?.text.toString().trim(),
                     binding.passwordTextInputLayout.editText?.text.toString().trim(),
                     binding.nameTextInputLayout.editText?.text.toString().trim(),
-                    binding.image.visibility =     )
+                  )
             findNavController().navigate(R.id.action_registrationFragment_to_feedFragment)
 
         }

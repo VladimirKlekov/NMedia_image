@@ -2,16 +2,12 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.MediaUpload
 import ru.netology.nmedia.error.AuthorizationException
 import ru.netology.nmedia.error.LostConnectException
-import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 
@@ -45,10 +41,10 @@ class AuthSingInViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun registration(login: String, password: String, name: String, media: MediaUpload) {
+    fun registration(login: String, password: String, name: String) {
         viewModelScope.launch {
             try {
-            repository.registration(login, password, name, media)
+            repository.registration(login, password, name)
             } catch (e: LostConnectException) {
                 e.printStackTrace()
                 lostConnection.emit(Unit)

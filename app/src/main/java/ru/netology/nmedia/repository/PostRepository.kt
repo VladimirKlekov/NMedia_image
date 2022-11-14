@@ -20,6 +20,6 @@ interface PostRepository {
 
     /** -------добавляю для auth--------------------------------------------------------------- **/
     suspend fun login(login: String, password: String)
-    suspend fun registration(login: String, password: String, name: String, media:MediaUpload)
+    suspend fun registration(login: String, password: String, name: String)
 }
 

@@ -4,13 +4,8 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import ru.netology.nmedia.api.*
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dao.PostDao
@@ -192,18 +187,11 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         }
     }
 
-    override suspend fun registration(login: String, password: String, name: String, media:MediaUpload) {
+    override suspend fun registration(login: String, password: String, name: String) {
         try {
 
-            val response = PostsApi.service.registerWithPhoto(
-                login = login.toRequestBody("text/plain".toMediaType()),
-                pass = password.toRequestBody("text/plain".toMediaType()),
-                name = name.toRequestBody("text/plain".toMediaType()),
-                media = MultipartBody.Part.createFormData("file",
-                    media.file.name,
-                    media.file.asRequestBody()
-                )
-            )
+            val response = PostsApi.service.registerUser(
+                login, password, name)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
